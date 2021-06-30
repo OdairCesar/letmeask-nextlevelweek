@@ -6,12 +6,11 @@ import googleIconImg from '../assets/images/google-icon.svg'
 
 import '../styles/auth.scss'
 import { Button } from '../components/button'
-import { useContext } from 'react'
-import { AuthContext } from '../App'
+import { useAuth } from '../hooks/useAuth'
 
 export function Home(){
     const history = useHistory()
-    const {user, signInWithGoogle } = useContext(AuthContext)
+    const {user, signInWithGoogle } = useAuth()
 
     async function handleCreateRoom(){
         if(!user){
@@ -25,8 +24,12 @@ export function Home(){
         <div id="page-auth">
             <aside>
                 <img src={illustrationImg} alt="Ilustração simbolizando perguntas e respostas"/>
-                <strong>Toda pergunta tem uma resposta.</strong>
-                <p>Aprenda e compartilhe conhecimento com outras pessoas</p>
+                <strong>
+                    Toda pergunta tem uma resposta.
+                </strong>
+                <p>
+                    Aprenda e compartilhe conhecimento com outras pessoas
+                </p>
             </aside>
             <main>
                 <div className="main-content">
@@ -35,10 +38,14 @@ export function Home(){
                         <img src={googleIconImg} alt="Logo Google" />
                         Crie sua sala com o Google
                     </button>
-                    <div className="separator"> ou entre em uma sala</div>
+                    <div className="separator"> 
+                        ou entre em uma sala
+                    </div>
                     <form>
                         <input type="text" placeholder="Digite o código da sala" />
-                        <Button type="submit">Entrer na sala</Button>
+                        <Button type="submit">
+                            Entrer na sala
+                        </Button>
                     </form>
                 </div>
             </main>

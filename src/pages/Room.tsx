@@ -9,8 +9,8 @@ import { RoomCode } from '../components/RoomCode'
 import '../styles/room.scss'
 import logoImg from '../assets/images/logo.svg'
 import { database } from '../services/firebase'
-import { useEffect } from 'react'
 import { Question } from '../components/Question'
+import { useRoom } from '../hooks/useRoom'
 
 
 /** TIPAGENS */
@@ -18,60 +18,18 @@ type RoomParams = {
     id: string
 }
 
-type FirebaseQuestions = Record<string, {
-    author: {
-        name: string,
-        avatar: string
-    }
-    content: string,
-    isAnswered: boolean,
-    isHighlighted: boolean
-}>
 
-type QuestionType = {
-    id: string,
-    author: {
-        name: string,
-        avatar: string
-    }
-    content: string,
-    isAnswered: boolean,
-    isHighlighted: boolean
-
-}
 
 /** PAGINA */
 export function Room(){
     /** ATRIBUTOS */
     const { user } = useAuth()
-    const params = useParams<RoomParams>()
     const [ newQuestion, setNewQuestion ] = useState('')
-    const [ questions, setQuestions ] = useState<QuestionType[]>([])
-    const [ title, setTitle] = useState('')
+    const params = useParams<RoomParams>()
     const roomId = params.id
+    const { title, questions} = useRoom(roomId)
 
     /** FUNÇÕES */
-    useEffect(() =>{
-        const roomRef = database.ref(`rooms/${roomId}`)
-
-        roomRef.on('value', room => {
-            const databaseRoom = room.val()
-            const firebaseQuestions: FirebaseQuestions = databaseRoom.questions ?? null
-
-            const parsedQuestion = Object.entries(firebaseQuestions).map(([key, value ]) => {
-                return{
-                    id: key,
-                    content: value.content,
-                    author: value.author,
-                    isHighlighted: value.isHighlighted,
-                    isAnswered: value.isAnswered
-                }
-            })
-
-            setTitle(databaseRoom.title)
-            setQuestions(parsedQuestion)
-        })
-    }, [roomId])
 
     async function handleSendQuestion(event : FormEvent){
         event.preventDefault()
@@ -111,7 +69,7 @@ export function Room(){
 
             <main>
                 <div className="room-title">
-                    <h1>Sala React</h1>
+                    <h1>Sala: <span>{title}</span></h1>
                     { questions.length > 0 && <span>{questions.length} Pergunta(s)</span>}
                 </div>
 

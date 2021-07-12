@@ -10,6 +10,7 @@ import '../styles/room.scss'
 import logoImg from '../assets/images/logo.svg'
 import { database } from '../services/firebase'
 import { useEffect } from 'react'
+import { Question } from '../components/Question'
 
 
 /** TIPAGENS */
@@ -27,7 +28,7 @@ type FirebaseQuestions = Record<string, {
     isHighlighted: boolean
 }>
 
-type Question = {
+type QuestionType = {
     id: string,
     author: {
         name: string,
@@ -45,7 +46,7 @@ export function Room(){
     const { user } = useAuth()
     const params = useParams<RoomParams>()
     const [ newQuestion, setNewQuestion ] = useState('')
-    const [ questions, setQuestions ] = useState<Question[]>([])
+    const [ questions, setQuestions ] = useState<QuestionType[]>([])
     const [ title, setTitle] = useState('')
     const roomId = params.id
 
@@ -53,7 +54,7 @@ export function Room(){
     useEffect(() =>{
         const roomRef = database.ref(`rooms/${roomId}`)
 
-        roomRef.once('value', room => {
+        roomRef.on('value', room => {
             const databaseRoom = room.val()
             const firebaseQuestions: FirebaseQuestions = databaseRoom.questions ?? null
 
@@ -111,7 +112,7 @@ export function Room(){
             <main>
                 <div className="room-title">
                     <h1>Sala React</h1>
-                    { questions.length > 0 && <span>{questions.length} Perguntas</span>}
+                    { questions.length > 0 && <span>{questions.length} Pergunta(s)</span>}
                 </div>
 
                 <form action="" onSubmit={handleSendQuestion}>
@@ -137,6 +138,18 @@ export function Room(){
                         </Button>
                     </div>
                 </form>
+                
+                <div>
+                    {questions.map(question =>{
+                        return(
+                            <Question 
+                                key={question.id}
+                                content={question.content}
+                                author={question.author}
+                            />
+                        )
+                    })}
+                </div>
             </main>
         </div>
     )

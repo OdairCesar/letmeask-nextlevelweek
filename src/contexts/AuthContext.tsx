@@ -8,9 +8,9 @@ type AuthContextType = {
 }
 
 type User = {
-  id: String;
-  name: String;
-  avatar: String;
+  id: string;
+  name: string;
+  avatar: string;
 }
 type AuthContextProviderType = {
     children: ReactNode;

@@ -8,10 +8,20 @@
       margin: 0 auto;
       display: flex;
       justify-content: space-between;
+      flex-direction: row;
       align-items: center;
 
       > img {
         max-height: 45px;
+      }
+
+      > div {
+        display: flex;
+        gap: 16px;
+
+        button{
+          height: 40px;
+        }
       }
     }
   }

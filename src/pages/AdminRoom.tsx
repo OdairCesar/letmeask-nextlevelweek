@@ -1,5 +1,5 @@
 /** IMPORTAÇÕES */
-import { FormEvent, useState } from 'react'
+import { useState } from 'react'
 import { useParams } from 'react-router-dom'
 
 import { useAuth } from '../hooks/useAuth'
@@ -19,7 +19,7 @@ type RoomParams = {
 }
 
 /** PAGINA */
-export function Room(){
+export function AdminRoom(){
     /** ATRIBUTOS */
     const { user } = useAuth()
     const [ newQuestion, setNewQuestion ] = useState('')
@@ -29,8 +29,7 @@ export function Room(){
 
     /** FUNÇÕES */
 
-    async function handleSendQuestion(event : FormEvent){
-        event.preventDefault()
+    async function handleSendQuestion(){
 
         if(newQuestion.trim() === '') return
 
@@ -52,6 +51,7 @@ export function Room(){
 
         setNewQuestion('')
     }
+    handleSendQuestion()
 
     /** COMPONENTE */
     return(
@@ -61,6 +61,7 @@ export function Room(){
                     <img src={logoImg} alt="Letmeask" />
                     <div>
                         <RoomCode code={roomId}/>
+                        <Button isOutlined>Encerrar Sala</Button>
                     </div>
                 </div>
             </header>
@@ -70,30 +71,6 @@ export function Room(){
                     <h1>Sala: <span>{title}</span></h1>
                     { questions.length > 0 && <span>{questions.length} Pergunta(s)</span>}
                 </div>
-
-                <form action="" onSubmit={handleSendQuestion}>
-                    <textarea 
-                        placeholder="O que você quer perguntar" 
-                        onChange={event => setNewQuestion(event.target.value)}
-                        value={newQuestion}
-                    />
-                    <div className="form-footer">
-                        { user ? (
-                                <div className="user-info">
-                                    <img src={user.avatar} alt={user.name} />
-                                    <span>{user.name}</span>
-                                </div>
-                            ):(
-                                <span>Para enviar uma pergunta, <button>faça seu login</button>.</span>
-                            )
-                        }
-                        <Button 
-                            type="submit" 
-                            disabled={!user}>
-                            Enviar pergunta
-                        </Button>
-                    </div>
-                </form>
                 
                 <div>
                     {questions.map(question =>{

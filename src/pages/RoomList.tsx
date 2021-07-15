@@ -6,37 +6,67 @@ import { ItenRoom } from '../components/ItenRoom'
 
 import logoImg from '../assets/images/logo.svg'
 import { database } from '../services/firebase'
+import { useAuth } from '../hooks/useAuth'
+
+type FirebaseRooms = Record<string, {
+  authorId: string,
+  title: string,
+  roomIsOpen: boolean,
+  likes: Record<string, {
+      authorId: string
+  }>
+}>
 
 type RoomType = {
-  authorId:string;
-  title: string;
-  roomIsOpen?: boolean;
+  authorId:string,
+  title: string,
+  roomIsOpen?: boolean,
+  likeCount: number,
+  likeId: string | undefined
 }[]
 
 export function RoomList() {
+  const { user } = useAuth()
   const history = useHistory();
   const [listRooms, setListRooms] = useState<RoomType>([])
 
   useEffect(() => {
     const databaseRef = database.ref(`rooms`);
+    
     databaseRef.once('value', rooms => {
-      const dbRoom: object = rooms.val() ?? {}
+      const dbRoom: FirebaseRooms = rooms.val() ?? {}
+
       const parsedRooms = Object.entries(dbRoom).map(([key,value]) => {
         return {
           authorId: key,
           title: value.title,
-          roomIsOpen: value.roomIsOpen
+          roomIsOpen: value.roomIsOpen,
+          likeCount: Object.values(value.likes ?? {}).length,
+          likeId: Object.entries(value.likes ?? {}).find(([key, like]) => like.authorId === user?.id)?.[0]
         }
       })
 
       setListRooms(parsedRooms)
     })
+    return()=>{
+      databaseRef.off('value')
+    }
 
-  }, [])
+  }, [user?.id])
 
   function handleGoHome() {
     return history.push('/')
   }
+
+  async function handleLikeRoom(authorId : string, likeId: string | undefined){
+    if(likeId){
+        await database.ref(`rooms/${authorId}/likes/${likeId}`).remove()
+    }else{
+        await database.ref(`rooms/${authorId}/likes`).push({
+            authorId: user?.id
+        })
+    }
+}
 
   return(
     <div id="page-room">
@@ -53,16 +83,19 @@ export function RoomList() {
           <h1>Lista de Salas</h1>
           {listRooms.length > 0 && <span>{listRooms.length} Salas</span>}
         </div>
-
         {
           listRooms.map( rooms =>{
               return(
                 <ItenRoom authorId={rooms.authorId} title={rooms.title}>
-                    
+                    <button className={ `like-button ${rooms.likeId? 'liked': ''}`} type="button" aria-label="Marcar como gostei" onClick={() => handleLikeRoom(rooms.authorId, rooms.likeId)}>
+                      {rooms.likeCount > 0 && <span>{rooms.likeCount}</span>}
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M7 22H4C3.46957 22 2.96086 21.7893 2.58579 21.4142C2.21071 21.0391 2 20.5304 2 20V13C2 12.4696 2.21071 11.9609 2.58579 11.5858C2.96086 11.2107 3.46957 11 4 11H7M14 9V5C14 4.20435 13.6839 3.44129 13.1213 2.87868C12.5587 2.31607 11.7956 2 11 2L7 11V22H18.28C18.7623 22.0055 19.2304 21.8364 19.5979 21.524C19.9654 21.2116 20.2077 20.7769 20.28 20.3L21.66 11.3C21.7035 11.0134 21.6842 10.7207 21.6033 10.4423C21.5225 10.1638 21.3821 9.90629 21.1919 9.68751C21.0016 9.46873 20.7661 9.29393 20.5016 9.17522C20.2371 9.0565 19.9499 8.99672 19.66 9H14Z" stroke="#737380" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </button> 
                 </ItenRoom>
               )
             }
-
           )
         }
       </main>

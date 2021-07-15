@@ -17,7 +17,7 @@ export default function App() {
           <Route path="/rooms/new" component={NewRoom} />
           <Route path="/rooms/:id" component={Room} />
           <Route path="/admin/rooms/:id" component={AdminRoom} />
-          <Route path="/RoomList" component={RoomList} />
+          <Route path="/roomlist" component={RoomList} />
         </Switch>
       </AuthContextProvider>
     </BrowserRouter>

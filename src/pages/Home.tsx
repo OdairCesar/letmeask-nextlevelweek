@@ -43,6 +43,12 @@ export function Home(){
         history.push(`/rooms/${roomCode}`)
     }
 
+    async function handleListRoom(){
+        if(!user){
+            await signInWithGoogle()
+        }
+        history.push('/roomlist')
+    }
     return(
         <div id="page-auth">
             <aside>
@@ -75,6 +81,7 @@ export function Home(){
                             Entrar na sala
                         </Button>
                     </form>
+                    <Button onClick={handleListRoom}>Salas Abertas</Button>
                 </div>
             </main>
         </div>

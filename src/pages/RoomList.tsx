@@ -2,12 +2,13 @@ import { useHistory } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 
 import { Button } from '../components/Button'
+import { ItenRoom } from '../components/ItenRoom'
 
 import logoImg from '../assets/images/logo.svg'
 import { database } from '../services/firebase'
 
 type RoomType = {
-  roomId:string;
+  authorId:string;
   title: string;
   roomIsOpen?: boolean;
 }[]
@@ -22,7 +23,7 @@ export function RoomList() {
       const dbRoom: object = rooms.val() ?? {}
       const parsedRooms = Object.entries(dbRoom).map(([key,value]) => {
         return {
-          roomId: key,
+          authorId: key,
           title: value.title,
           roomIsOpen: value.roomIsOpen
         }
@@ -53,6 +54,17 @@ export function RoomList() {
           {listRooms.length > 0 && <span>{listRooms.length} Salas</span>}
         </div>
 
+        {
+          listRooms.map( rooms =>{
+              return(
+                <ItenRoom authorId={rooms.authorId} title={rooms.title}>
+                    
+                </ItenRoom>
+              )
+            }
+
+          )
+        }
       </main>
 
     </div>

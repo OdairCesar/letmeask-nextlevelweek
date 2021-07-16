@@ -1,6 +1,7 @@
 import { ReactNode } from 'react'
 import { useHistory } from 'react-router-dom'
 import { Button }from '../components/Button'
+import { useAuth } from '../hooks/useAuth'
 
 type ItenRoomProps = {
     authorId: string,
@@ -11,9 +12,14 @@ type ItenRoomProps = {
 
 export function ItenRoom({authorId, authorName, title, children} : ItenRoomProps){
     const history = useHistory()
+    const { user } = useAuth()
 
     function handleJoinRoom (authorId: string){
-        history.push(`/rooms/${authorId}`)
+        if(authorId === user?.id){
+            history.push(`admin/rooms/${authorId}`)
+        }else{
+            history.push(`/rooms/${authorId}`)
+        }
     }
 
     return(

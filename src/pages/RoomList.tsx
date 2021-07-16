@@ -10,6 +10,7 @@ import { useAuth } from '../hooks/useAuth'
 
 type FirebaseRooms = Record<string, {
   authorId: string,
+  authorName: string,
   title: string,
   roomIsOpen: boolean,
   likes: Record<string, {
@@ -18,7 +19,8 @@ type FirebaseRooms = Record<string, {
 }>
 
 type RoomType = {
-  authorId:string,
+  authorId: string,
+  authorName: string,
   title: string,
   roomIsOpen?: boolean,
   likeCount: number,
@@ -39,6 +41,7 @@ export function RoomList() {
       const parsedRooms = Object.entries(dbRoom).map(([key,value]) => {
         return {
           authorId: key,
+          authorName: value.authorName,
           title: value.title,
           roomIsOpen: value.roomIsOpen,
           likeCount: Object.values(value.likes ?? {}).length,
@@ -86,7 +89,7 @@ export function RoomList() {
         {
           listRooms.map( rooms =>{
               return(
-                <ItenRoom authorId={rooms.authorId} title={rooms.title}>
+                <ItenRoom authorName={rooms.authorName} title={rooms.title}>
                     <button className={ `like-button ${rooms.likeId? 'liked': ''}`} type="button" aria-label="Marcar como gostei" onClick={() => handleLikeRoom(rooms.authorId, rooms.likeId)}>
                       {rooms.likeCount > 0 && <span>{rooms.likeCount}</span>}
                       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">

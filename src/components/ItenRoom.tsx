@@ -1,18 +1,18 @@
 import { ReactNode } from 'react'
 
 type ItenRoomProps = {
-    authorId: string,
+    authorName: string,
     title: string,
     children?: ReactNode
 }
 
-export function ItenRoom({authorId, title, children} : ItenRoomProps){
+export function ItenRoom({authorName, title, children} : ItenRoomProps){
     return(
         <div className='question'>
             <p>{title}</p>
             <footer>
                 <div>
-                    <span>{authorId}</span>
+                    <span>{authorName}</span>
                 </div>
                 <div>
                     {children}

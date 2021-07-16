@@ -89,7 +89,7 @@ export function RoomList() {
         {
           listRooms.map( rooms =>{
               return(
-                <ItenRoom authorName={rooms.authorName} title={rooms.title}>
+                <ItenRoom authorId={rooms.authorId} authorName={rooms.authorName} title={rooms.title}>
                     <button className={ `like-button ${rooms.likeId? 'liked': ''}`} type="button" aria-label="Marcar como gostei" onClick={() => handleLikeRoom(rooms.authorId, rooms.likeId)}>
                       {rooms.likeCount > 0 && <span>{rooms.likeCount}</span>}
                       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
